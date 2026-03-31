@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signum Vero — The Signal Quality Layer for Hiring</title>
+  <meta name="description" content="Signum Vero reads CVs the way an experienced recruiter would. Evidence-based candidate assessment that goes beyond keyword matching.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1f2e'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='serif' font-size='20' font-weight='bold' fill='%23c8a24e'%3ES%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --void: #0d1017;
+      --deep: #131825;
+      --surface: #1a1f2e;
+      --elevated: #222839;
+      --border: #2a3148;
+      --border-subtle: #1f2537;
+      --text: #e8e6e1;
+      --text-secondary: #9a97a0;
+      --text-muted: #5f5d68;
+      --gold: #c8a24e;
+      --gold-dim: #a68738;
+      --gold-glow: rgba(200, 162, 78, 0.12);
+      --gold-glow-strong: rgba(200, 162, 78, 0.25);
+      --success: #4aba8a;
+      --danger: #d45a5a;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--void);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { color: var(--text); }
+
+    /* ============================================================
+       Layout
+       ============================================================ */
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 80px 0;
+    }
+
+    /* ============================================================
+       Nav
+       ============================================================ */
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(13, 16, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 0;
+    }
+
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--void);
+    }
+
+    .nav-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      font-weight: 450;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+
+    .hero {
+      padding: 160px 0 80px;
+      text-align: center;
+    }
+
+    .hero-label {
+      display: inline-block;
+      padding: 4px 14px;
+      background: var(--gold-glow);
+      border: 1px solid var(--gold-dim);
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero h1 em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+      color: var(--void);
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .hero-cta:hover {
+      color: var(--void);
+      box-shadow: 0 0 24px var(--gold-glow-strong);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       Problem
+       ============================================================ */
+
+    .problem {
+      background: var(--deep);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .problem-card {
+      padding: 32px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .problem-card.bad {
+      border-color: rgba(212, 90, 90, 0.3);
+      background: rgba(212, 90, 90, 0.04);
+    }
+
+    .problem-card.good {
+      border-color: rgba(200, 162, 78, 0.3);
+      background: var(--gold-glow);
+    }
+
+    .problem-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      margin-bottom: 16px;
+    }
+
+    .problem-card.bad h3 { color: var(--danger); }
+    .problem-card.good h3 { color: var(--gold); }
+
+    .problem-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 400;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      text-align: center;
+      font-size: 1rem;
+      max-width: 560px;
+      margin: 0 auto 48px;
+    }
+
+    /* ============================================================
+       How It Works
+       ============================================================ */
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .step-card:hover {
+      border-color: var(--gold-dim);
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--void);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .step-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       Demo
+       ============================================================ */
+
+    .demo {
+      background: var(--deep);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .demo-video {
+      position: relative;
+      padding-bottom: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .demo-video iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ============================================================
+       Pricing
+       ============================================================ */
+
+    .pricing-card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--gold-dim);
+      border-radius: 12px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: 0 0 40px var(--gold-glow);
+    }
+
+    .pricing-amount {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .pricing-per {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features li {
+      padding: 8px 0;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       Contact Form
+       ============================================================ */
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    .contact-info p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 550;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      background: var(--deep);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+      color: var(--void);
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn:hover {
+      box-shadow: 0 0 20px var(--gold-glow-strong);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border-subtle);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    footer span { color: var(--gold); }
+
+    /* ============================================================
+       Responsive
+       ============================================================ */
+
+    @media (max-width: 768px) {
+      .problem-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .nav-links { display: none; }
+
+      section { padding: 60px 0; }
+      .hero { padding: 120px 0 60px; }
+
+      .pricing-card { padding: 32px 24px; }
+    }
+
+    /* ============================================================
+       Animations
+       ============================================================ */
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate {
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .animate-1 { animation-delay: 0ms; }
+    .animate-2 { animation-delay: 100ms; }
+    .animate-3 { animation-delay: 200ms; }
+    .animate-4 { animation-delay: 300ms; }
+
+    /* ============================================================
+       Scrollbar
+       ============================================================ */
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--void); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-mark">S</div>
+        <div class="nav-name">Signum Vero</div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Get Started</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label animate animate-1">Evidence-Based Candidate Assessment</div>
+      <h1 class="animate animate-2">Stop losing great candidates<br>to <em>keyword matching</em></h1>
+      <p class="animate animate-3">
+        Signum Vero reads CVs the way an experienced recruiter would — looking for evidence of real capability, not just the right buzzwords. Send us your job description and CVs, get back a ranked shortlist with actionable insights.
+      </p>
+      <a href="#contact" class="hero-cta animate animate-4">Get Your First Assessment →</a>
+    </div>
+  </section>
+
+  <!-- Problem -->
+  <section class="problem" id="problem">
+    <div class="container">
+      <h2 class="section-title">The problem with keyword screening</h2>
+      <p class="section-subtitle">ATS systems filter on keywords. Candidates have learned to game them. The result? You miss great people and waste time on keyword stuffers.</p>
+      <div class="problem-grid">
+        <div class="problem-card bad">
+          <h3>What ATS sees</h3>
+          <p>A candidate lists "C#, .NET, Azure, HL7, FHIR, healthcare, SQL Server" and 40 other technologies. Eight years of experience. Keywords match the job description perfectly. ATS ranks them highly.</p>
+          <p style="margin-top: 12px;">Reality? Zero quantifiable achievements. No evidence of depth. No metrics, no impact, no architectural decisions. Just a skills list.</p>
+        </div>
+        <div class="problem-card good">
+          <h3>What Signum Vero sees</h3>
+          <p>A candidate from a different tech stack led a microservices migration maintaining 99.97% uptime, implemented PCI-DSS compliance, and is actively learning your stack through personal projects.</p>
+          <p style="margin-top: 12px;">Most ATS systems would reject them outright. Signum Vero flags them as a strong architectural fit with transferable regulated-industry experience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how">
+    <div class="container">
+      <h2 class="section-title">How it works</h2>
+      <p class="section-subtitle">No software to install. No onboarding. No commitment.</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Send your JD and CVs</h3>
+          <p>Email us your job description and your candidate CVs. Any format — PDF, Word, plain text.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>We assess every candidate</h3>
+          <p>Each CV is deeply analysed against the role requirements. We look for evidence of impact, flag skills inflation, and identify transferable experience.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Get your ranked shortlist</h3>
+          <p>You receive a ranked report with scores, insights, key concerns, and suggested interview questions for each candidate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <h2 class="section-title">See it in action</h2>
+      <p class="section-subtitle">Watch how Signum Vero catches a keyword stuffer and surfaces a candidate that ATS would have rejected.</p>
+      <div class="demo-video">
+        <iframe src="https://www.loom.com/embed/ac6094287e9342199bc36790f111d665" allowfullscreen></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="container">
+      <h2 class="section-title">Simple pricing</h2>
+      <p class="section-subtitle">Pay per role. No subscription, no lock-in.</p>
+      <div class="pricing-card">
+        <div class="pricing-amount">$200</div>
+        <div class="pricing-per">per role assessment</div>
+        <ul class="pricing-features">
+          <li>Deep analysis of every candidate CV against the role</li>
+          <li>Ranked shortlist with evidence-based scores</li>
+          <li>Standout signals and key concerns for each candidate</li>
+          <li>Tailored interview questions based on identified gaps</li>
+          <li>Hiring recommendation with confidence level</li>
+          <li>Results delivered within 24 hours</li>
+        </ul>
+        <a href="#contact" class="btn">Get Started →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" style="background: var(--deep); border-top: 1px solid var(--border-subtle);">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Ready to find the real signal?</h3>
+          <p>Send us your job description and candidate CVs. We'll get back to you within 24 hours with a full ranked assessment.</p>
+          <p>Prefer to just email? Send everything to:</p>
+          <a href="mailto:adam-searle@hotmail.com" class="contact-email">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22,4 L12,13 L2,4"/></svg>
+            adam-searle@hotmail.com
+          </a>
+        </div>
+        <form action="https://formspree.io/f/mbdpylpb" method="POST">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-input" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-input" required placeholder="you@company.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company</label>
+            <input type="text" name="company" class="form-input" placeholder="Your company">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea name="message" class="form-textarea" placeholder="Tell us about the role you're hiring for, or just say hello..."></textarea>
+          </div>
+          <button type="submit" class="btn">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <
